@@ -10,7 +10,10 @@ public class Order
     public long UserId { get; set; }
     public int Quantity { get; set; }
 
+    public string DeliveryAddressSnapshot { get; set; } = string.Empty;
+
     public OrderStatus Status { get; set; } = OrderStatus.Collecting;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? DeliveryStartedAt { get; set; }
 }
+

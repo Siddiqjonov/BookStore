@@ -14,5 +14,6 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.Property(b => b.Title).IsRequired().HasMaxLength(255);
         builder.Property(b => b.Author).IsRequired().HasMaxLength(255);
         builder.Property(b => b.Price).HasColumnType("decimal(18,2)");
+        builder.Property(b => b.ISBN).IsRequired(false).HasMaxLength(50);
     }
 }

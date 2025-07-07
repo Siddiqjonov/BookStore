@@ -16,5 +16,6 @@ public class User
     public UserRole Role { get; set; } = UserRole.User;
 
     public bool EmailConfirmed { get; set; } = false;
+    public long? DefaultAddressId { get; set; } // optional
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

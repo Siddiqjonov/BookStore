@@ -12,5 +12,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasKey(o => o.Id);
         builder.Property(o => o.Status).HasConversion<string>();
+        builder.Property(o => o.DeliveryAddressSnapshot).IsRequired().HasMaxLength(500);
     }
 }
