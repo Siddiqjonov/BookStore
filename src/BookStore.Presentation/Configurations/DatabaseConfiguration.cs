@@ -1,19 +1,17 @@
 ﻿using BookStore.Infrastructure.Persistence.DataContext;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace BookStore.Presentation.Configurations;
 
 public static class DatabaseConfiguration
 {
-    public static void ConfigureMySqlDb(this WebApplicationBuilder builder)
+    public static void ConfigureSqlServerDatabase(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+        var connectionString = builder.Configuration.GetConnectionString("SqlServerConnection");
 
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36))));
+            options.UseSqlServer(connectionString));
     }
-
 
     public static void ConfigurePostgresDb(this WebApplicationBuilder builder)
     {
