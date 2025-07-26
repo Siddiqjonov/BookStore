@@ -13,7 +13,7 @@ public static class DatabaseConfiguration
             options.UseSqlServer(connectionString));
     }
 
-    public static void ConfigurePostgresDb(this WebApplicationBuilder builder)
+    public static void ConfigurePostgresDatabase(this WebApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 
@@ -21,3 +21,4 @@ public static class DatabaseConfiguration
             options.UseNpgsql(connectionString));
     }
 }
+    
