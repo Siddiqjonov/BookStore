@@ -3,34 +3,34 @@ using BookStore.Domain.Entities;
 
 namespace BookStore.Infrastructure.Persistence.Repositories;
 
-public class BasketRepository : IBasketRepository
+public class BookImageRepository : IBookImageRepository
 {
-    public Task AddAsync(Basket basket)
+    public Task AddAsync(BookImage image)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Basket basket)
+    public Task DeleteAsync(BookImage image)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<Basket>> GetAllAsync()
+    public Task<List<BookImage>> GetAllAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<Basket?> GetByIdAsync(long basketId)
+    public Task<List<BookImage>> GetByBookIdAsync(long bookId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Basket?> GetByUserIdAsync(long userId)
+    public Task<BookImage?> GetByIdAsync(long bookImageId)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(Basket basket)
+    public Task UpdateAsync(BookImage image)
     {
         throw new NotImplementedException();
     }
