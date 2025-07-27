@@ -1,5 +1,6 @@
 ﻿namespace BookStore.Application.Interfaces;
 
-public interface IBookItemRepository
+public interface IBookImageRepository
 {
+    
 }
