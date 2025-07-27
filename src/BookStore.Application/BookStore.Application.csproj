@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <Folder Include="Dtos\" />
+    <Folder Include="FluentValidation\" />
+    <Folder Include="Helpers\Security\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
