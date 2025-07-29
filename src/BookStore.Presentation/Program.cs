@@ -12,6 +12,7 @@ public static class Program
         builder.ConfigurePostgresDatabase();
         builder.ConfigureSqlServerDatabase();
         builder.RegisterRepositories();
+        builder.ConfigureJwtAuth();
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
