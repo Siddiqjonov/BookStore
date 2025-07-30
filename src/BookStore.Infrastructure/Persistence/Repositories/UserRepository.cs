@@ -30,6 +30,11 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
+    public Task<User?> SelectUserByIdAsync(long userId)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<User?> SelectUserByUserNameAsync(string userName)
     {
         throw new NotImplementedException();

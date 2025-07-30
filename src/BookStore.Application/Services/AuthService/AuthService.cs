@@ -1,6 +1,5 @@
 ﻿using BookStore.Application.Converters;
 using BookStore.Application.Dtos.Auth;
-using BookStore.Application.Dtos.Enums;
 using BookStore.Application.Dtos.User;
 using BookStore.Application.FluentValidations.AuthValidations;
 using BookStore.Application.Helpers;
@@ -42,7 +41,7 @@ public class AuthService : IAuthService
             ?? throw new NotFoundException($"Username and/or Password is incorrect");
 
         var checkUserPassword = PasswordHasher.Verify(userLogInDto.Password, user.PasswordHash, user.Salt);
-        if (checkUserPassword == false)
+        if (!checkUserPassword)
         {
             throw new UnauthorizedException("Username and/or Password is incorrect");
         }
@@ -88,9 +87,46 @@ public class AuthService : IAuthService
         await _refreshTokenRepository.RemoveRefreshTokenAsync(token);
     }
 
-    public Task<LogInResponseDto> RefreshTokenAsync(RefreshRequestDto request)
+    public async Task<LogInResponseDto> RefreshTokenAsync(RefreshRequestDto request)
     {
-        throw new NotImplementedException();
+        var principal = _tokenService.GetPrincipalFromExpiredToken(request.AccessToken);
+        if (principal == null) throw new ForbiddenException("Invalid Access token");
+
+        var userId = long.Parse(principal.FindFirst("UserId")!.Value);
+
+        var refreshToken = await _refreshTokenRepository.SelectRefreshTokenAsync(request.RefreshToken, userId);
+        if (refreshToken == null || refreshToken.Expires < DateTime.UtcNow || refreshToken.IsRevoked)
+            throw new UnauthorizedAccessException("Invalid or expired refresh token");
+
+        // make refresh token used
+        refreshToken.IsRevoked = true;
+
+        var user = await _userRepository.SelectUserByIdAsync(userId)
+            ?? throw new NotFoundException("User not found by the given UserId from the token");
+
+        var userGetDto = Mapper.MapUserToUserGetDto(user);
+
+        // issue new tokens
+        var newAccessToken = _tokenService.GenerateTokent(userGetDto);
+        var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+        var refreshTokenToDB = new RefreshToken()
+        {
+            Token = newRefreshToken,
+            Expires = DateTime.UtcNow.AddDays(21),
+            IsRevoked = false,
+            UserId = user.UserId,
+        };
+
+        await _refreshTokenRepository.InsertRefreshTokenAsync(refreshTokenToDB);
+
+        return new LogInResponseDto()
+        {
+            AccessToken = newAccessToken,
+            TokenType = "Bearer",
+            RefreshToken = newRefreshToken,
+            Expires = 24,
+        };
     }
 
     public Task<long> SignUpUserAsync(UserCreateDto userCreateDto)
