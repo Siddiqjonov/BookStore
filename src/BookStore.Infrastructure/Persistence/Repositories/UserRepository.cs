@@ -5,7 +5,7 @@ namespace BookStore.Infrastructure.Persistence.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    public Task AddAsync(User user)
+    public Task<long> InsertUserAsync(User user)
     {
         throw new NotImplementedException();
     }

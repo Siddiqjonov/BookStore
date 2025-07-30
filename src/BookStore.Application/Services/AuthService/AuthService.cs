@@ -2,6 +2,7 @@
 using BookStore.Application.Dtos.Auth;
 using BookStore.Application.Dtos.User;
 using BookStore.Application.FluentValidations.AuthValidations;
+using BookStore.Application.FluentValidations.UserValidations;
 using BookStore.Application.Helpers;
 using BookStore.Application.Helpers.Security;
 using BookStore.Application.Interfaces;
@@ -15,14 +16,14 @@ public class AuthService : IAuthService
     private readonly IUserRepository _userRepository;
     private readonly ITokenService _tokenService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
-    private readonly IUserRoleRepository _userRoleRepository;
+    private readonly IEmailVarificationCodeRepository _emailVarificationCodeRepository;
 
-    public AuthService(IUserRepository userRepository, ITokenService tokenService, IRefreshTokenRepository refreshTokenRepository, IUserRoleRepository userRoleRepository)
+    public AuthService(IUserRepository userRepository, ITokenService tokenService, IRefreshTokenRepository refreshTokenRepository, IEmailVarificationCodeRepository emailVarificationCodeRepository)
     {
         _userRepository = userRepository;
         _tokenService = tokenService;
         _refreshTokenRepository = refreshTokenRepository;
-        _userRoleRepository = userRoleRepository;
+        _emailVarificationCodeRepository = emailVarificationCodeRepository;
     }
 
     public async Task<LogInResponseDto> LoginUserAsync(UserLogInDto userLogInDto)
@@ -129,8 +130,16 @@ public class AuthService : IAuthService
         };
     }
 
-    public Task<long> SignUpUserAsync(UserCreateDto userCreateDto)
+    public async Task<long> SignUpUserAsync(UserCreateDto userCreateDto)
     {
-        throw new NotImplementedException();
+        var userValidator = new UserCreateDtoValidator();
+        var result = userValidator.Validate(userCreateDto);
+
+        if (!result.IsValid)
+            throw new ValidationFailedException(string.Join("; ", result.Errors.Select(e => e.ErrorMessage)));
+
+        var user = Mapper.MapUserCreateDtoToUser(userCreateDto);
+
+        return await _userRepository.InsertUserAsync(user);
     }
 }

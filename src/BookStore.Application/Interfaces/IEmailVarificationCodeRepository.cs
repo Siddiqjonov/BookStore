@@ -4,8 +4,8 @@ namespace BookStore.Application.Interfaces;
 
 public interface IEmailVarificationCodeRepository
 {
-    Task SendVerificationCodeAsync(string email, string code);
+    Task SendVerificationCodeAsync(string email);
     Task<EmailVerificationCode?> GetByIdAsync(long id);
-    Task<EmailVerificationCode?> GetByUserIdAsync(Guid userId);
-    Task AddAsync(EmailVerificationCode code);
+    Task<EmailVerificationCode?> GetByEmailAsync(string email);
+    Task<bool> VerifyCodeAsync(string email, string code);
 }
