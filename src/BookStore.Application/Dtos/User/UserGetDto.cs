@@ -1,4 +1,4 @@
-﻿using BookStore.Domain.Enums;
+﻿using BookStore.Application.Dtos.Enums;
 
 namespace BookStore.Application.Dtos.User;
 
@@ -11,7 +11,7 @@ public class UserGetDto
     public string PhoneNumber { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 
-    public UserRole Role { get; set; } = UserRole.User;
+    public UserRoleDto Role { get; set; }
 
     public bool EmailConfirmed { get; set; } = false;
     public long? DefaultAddressId { get; set; }

@@ -1,4 +1,6 @@
-﻿using BookStore.Application.Dtos.Auth;
+﻿using BookStore.Application.Converters;
+using BookStore.Application.Dtos.Auth;
+using BookStore.Application.Dtos.Enums;
 using BookStore.Application.Dtos.User;
 using BookStore.Application.FluentValidations.AuthValidations;
 using BookStore.Application.Helpers;
@@ -11,20 +13,20 @@ namespace BookStore.Application.Services.AuthService;
 
 public class AuthService : IAuthService
 {
-    private readonly IUserRepository UserRepository;
-    private readonly ITokenService TokenService;
-    private readonly IRefreshTokenRepository RefreshTokenRepository;
-    private readonly IUserRoleRepository UserRoleRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly ITokenService _tokenService;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IUserRoleRepository _userRoleRepository;
 
-    public AuthService(IUserRepository userRepositroy, ITokenService tokenService, IRefreshTokenRepository refreshTokenRepository, IUserRoleRepository userRoleRepository)
+    public AuthService(IUserRepository userRepository, ITokenService tokenService, IRefreshTokenRepository refreshTokenRepository, IUserRoleRepository userRoleRepository)
     {
-        UserRepository = userRepositroy;
-        TokenService = tokenService;
-        RefreshTokenRepository = refreshTokenRepository;
-        UserRoleRepository = userRoleRepository;
+        _userRepository = userRepository;
+        _tokenService = tokenService;
+        _refreshTokenRepository = refreshTokenRepository;
+        _userRoleRepository = userRoleRepository;
     }
 
-    public Task<LogInResponseDto> LoginUserAsync(UserLogInDto userLogInDto)
+    public async Task<LogInResponseDto> LoginUserAsync(UserLogInDto userLogInDto)
     {
         var logInValidator = new UserLogInDtoValidator();
         var result = logInValidator.Validate(userLogInDto);
@@ -36,27 +38,20 @@ public class AuthService : IAuthService
         }
 
 
-        var user = await UserRepositroy.SelectUserByUserNameAsync(userLogInDto.UserName);
+        var user = await _userRepository.SelectUserByUserNameAsync(userLogInDto.UserName)
+            ?? throw new NotFoundException($"Username and/or Password is incorrect");
 
-        var checkUserPassword = PasswordHasher.Verify(userLogInDto.Password, user.Password, user.Salt);
+        var checkUserPassword = PasswordHasher.Verify(userLogInDto.Password, user.PasswordHash, user.Salt);
         if (checkUserPassword == false)
         {
-            throw new UnauthorizedException("User or password incorrect");
+            throw new UnauthorizedException("Username and/or Password is incorrect");
         }
 
-        var userGetDto = new UserGetDto()
-        {
-            UserId = user.UserId,
-            UserName = user.UserName,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
-            Role = user.UserRole.UserRoleName,
-        };
+        var userGetDto = Mapper.MapUserToUserGetDto(user);
 
-        var token = TokenService.GenerateTokent(userGetDto);
-        var existingToken = await RefreshTokenRepository.SelectActiveTokenByUserIdAsync(user.UserId);
+        var token = _tokenService.GenerateTokent(userGetDto);
+
+        var existingToken = await _refreshTokenRepository.SelectActiveTokenByUserIdAsync(user.UserId);
 
         var loginResponseDto = new LogInResponseDto()
         {
@@ -67,7 +62,7 @@ public class AuthService : IAuthService
 
         if (existingToken == null)
         {
-            var refreshToken = TokenService.GenerateRefreshToken();
+            var refreshToken = _tokenService.GenerateRefreshToken();
             var refreshTokenToDB = new RefreshToken()
             {
                 Token = refreshToken,
@@ -76,7 +71,7 @@ public class AuthService : IAuthService
                 UserId = user.UserId,
             };
 
-            await RefreshTokenRepository.InsertRefreshTokenAsync(refreshTokenToDB);
+            await _refreshTokenRepository.InsertRefreshTokenAsync(refreshTokenToDB);
 
             loginResponseDto.RefreshToken = refreshToken;
         }
