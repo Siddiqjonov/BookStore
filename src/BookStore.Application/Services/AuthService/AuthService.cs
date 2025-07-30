@@ -83,9 +83,9 @@ public class AuthService : IAuthService
         return loginResponseDto;
     }
 
-    public Task LogOutAsync(string token)
+    public async Task LogOutAsync(string token)
     {
-        throw new NotImplementedException();
+        await _refreshTokenRepository.RemoveRefreshTokenAsync(token);
     }
 
     public Task<LogInResponseDto> RefreshTokenAsync(RefreshRequestDto request)
