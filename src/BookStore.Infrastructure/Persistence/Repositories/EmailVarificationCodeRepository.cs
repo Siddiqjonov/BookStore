@@ -11,6 +11,7 @@ namespace BookStore.Infrastructure.Persistence.Repositories;
 public class EmailVarificationCodeRepository : IEmailVarificationCodeRepository
 {
     private readonly AppDbContext _context;
+
     public EmailVarificationCodeRepository(AppDbContext context)
     {
         _context = context;
@@ -67,7 +68,6 @@ public class EmailVarificationCodeRepository : IEmailVarificationCodeRepository
         await _context.SaveChangesAsync();
     }
 
-
     public async Task<bool> VerifyCodeAsync(string email, string code)
     {
         var record = await _context.EmailVerificationCodes
@@ -80,5 +80,4 @@ public class EmailVarificationCodeRepository : IEmailVarificationCodeRepository
         await _context.SaveChangesAsync();
         return true;
     }
-
 }
