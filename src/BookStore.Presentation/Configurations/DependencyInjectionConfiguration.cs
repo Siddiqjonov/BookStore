@@ -1,4 +1,7 @@
 ﻿using BookStore.Application.Interfaces;
+using BookStore.Application.Services.AuthService;
+using BookStore.Application.Services.EmailService;
+using BookStore.Application.Services.UserService;
 using BookStore.Infrastructure.Persistence.Repositories;
 
 namespace BookStore.Presentation.Configurations;
@@ -26,5 +29,12 @@ public static class DependencyInjectionConfiguration
         builder.Services.AddScoped<IStoreRepository, StoreRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository> ();
         builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+    }
+
+    public static void RegisterServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IEmailService, EmailService>();
+        builder.Services.AddScoped<IUserService, UserService>();
     }
 }

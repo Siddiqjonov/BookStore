@@ -13,25 +13,40 @@ public static class Program
         builder.ConfigureSqlServerDatabase();
         builder.RegisterRepositories();
         builder.ConfigureJwtAuth();
+        builder.RegisterServices();
 
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+        // CORS
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
+        // Middleware
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
+        app.UseExceptionHandler();
         app.UseHttpsRedirection();
-
+        app.UseCors("AllowAll");
         app.UseAuthorization();
-
 
         app.MapControllers();
 
