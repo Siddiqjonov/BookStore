@@ -1,4 +1,5 @@
 using BookStore.Presentation.Configurations;
+using BookStore.Presentation.Endpoints;
 
 namespace BookStore.Presentation;
 
@@ -46,9 +47,11 @@ public static class Program
         app.UseExceptionHandler();
         app.UseHttpsRedirection();
         app.UseCors("AllowAll");
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
+        app.MapAuthEndpoints();
 
         app.Run();
     }
