@@ -1,4 +1,5 @@
-﻿using BookStore.Application.Interfaces;
+﻿using BookStore.Application.Helpers;
+using BookStore.Application.Interfaces;
 using BookStore.Application.Services.AuthService;
 using BookStore.Application.Services.EmailService;
 using BookStore.Application.Services.UserService;
@@ -36,5 +37,6 @@ public static class DependencyInjectionConfiguration
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
     }
 }
