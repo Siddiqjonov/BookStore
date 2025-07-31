@@ -1,13 +1,13 @@
 ﻿using BookStore.Application.Converters;
 using BookStore.Application.Dtos.Auth;
 using BookStore.Application.Dtos.User;
+using BookStore.Application.Errors;
 using BookStore.Application.FluentValidations.AuthValidations;
 using BookStore.Application.FluentValidations.UserValidations;
 using BookStore.Application.Helpers;
 using BookStore.Application.Helpers.Security;
 using BookStore.Application.Interfaces;
 using BookStore.Domain.Entities;
-using BookStore.Domain.Errors;
 
 namespace BookStore.Application.Services.AuthService;
 

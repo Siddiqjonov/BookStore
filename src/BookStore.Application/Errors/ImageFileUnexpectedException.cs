@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace BookStore.Domain.Errors;
+namespace BookStore.Application.Errors;
 
 [Serializable]
 public class ImageFileUnexpectedException : BaseException

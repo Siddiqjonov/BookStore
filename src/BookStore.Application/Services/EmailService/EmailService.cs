@@ -1,7 +1,7 @@
 ﻿using BookStore.Application.Dtos.Email;
+using BookStore.Application.Errors;
 using BookStore.Application.FluentValidations.EmailValidations;
 using BookStore.Application.Interfaces;
-using BookStore.Domain.Errors;
 
 namespace BookStore.Application.Services.EmailService;
 

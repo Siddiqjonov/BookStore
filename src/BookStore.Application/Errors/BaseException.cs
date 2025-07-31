@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 #pragma warning disable SYSLIB0051
 
-namespace BookStore.Domain.Errors;
+namespace BookStore.Application.Errors;
 
 [Serializable]
 public class BaseException : Exception
