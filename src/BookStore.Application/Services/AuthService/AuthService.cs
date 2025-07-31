@@ -140,6 +140,9 @@ public class AuthService : IAuthService
 
         var user = Mapper.MapUserCreateDtoToUser(userCreateDto);
 
-        return await _userRepository.InsertUserAsync(user);
+        var userId = await _userRepository.InsertUserAsync(user);
+
+        await _emailVarificationCodeRepository.SendVerificationCodeAsync(userCreateDto.Email);
+        return userId;
     }
 }
